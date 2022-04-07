@@ -15,8 +15,8 @@
  */
 package org.openrewrite.maven;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import java.util.Optional;
+
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
@@ -25,7 +25,8 @@ import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.xml.ChangeTagValueVisitor;
 import org.openrewrite.xml.tree.Xml;
 
-import java.util.Optional;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -91,9 +92,9 @@ public class ChangeDependencyGroupIdAndArtifactId extends Recipe {
                             changed = true;
                         }
                     }
-                    if (changed) {
-                        maybeUpdateModel();
-                    }
+//                    if (changed) {
+//                        maybeUpdateModel();
+//                    }
                 }
 
                 return super.visitTag(tag, ctx);
