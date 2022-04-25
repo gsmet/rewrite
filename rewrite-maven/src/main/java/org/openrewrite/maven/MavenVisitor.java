@@ -89,6 +89,7 @@ public class MavenVisitor<P> extends XmlVisitor<P> {
         }
         Xml.Tag tag = getCursor().getValue();
         Map<Scope, List<ResolvedDependency>> dependencies = getResolutionResult().getDependencies();
+
         for (Scope scope : Scope.values()) {
             if (dependencies.containsKey(scope)) {
                 for (ResolvedDependency resolvedDependency : dependencies.get(scope)) {
@@ -96,8 +97,7 @@ public class MavenVisitor<P> extends XmlVisitor<P> {
                         Dependency req = resolvedDependency.getRequested();
                         String reqGroup = req.getGroupId();
                         if  ((reqGroup == null || reqGroup.equals(tag.getChildValue("groupId").orElse(null))) &&
-                                req.getArtifactId().equals(tag.getChildValue("artifactId").orElse(null)) &&
-                                scope == Scope.fromName(tag.getChildValue("scope").orElse("compile"))) {
+                                req.getArtifactId().equals(tag.getChildValue("artifactId").orElse(null))) {
                             return true;
                         }
                     }
