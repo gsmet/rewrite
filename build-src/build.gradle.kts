@@ -19,7 +19,7 @@ dependencies {
     implementation("com.netflix.nebula:nebula-project-plugin:7.0.9")
     implementation("io.github.gradle-nexus:publish-plugin:1.0.0")
     implementation("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
-    implementation("org.openrewrite:plugin:latest.release")
+    implementation("org.openrewrite:plugin:5.20.0")
 }
 
 java {
