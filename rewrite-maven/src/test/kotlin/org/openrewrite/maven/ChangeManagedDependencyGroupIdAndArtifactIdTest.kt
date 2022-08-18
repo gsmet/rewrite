@@ -26,7 +26,8 @@ class ChangeManagedDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
             "javax.activation-api",
             "jakarta.activation",
             "jakarta.activation-api",
-            "2.1.0"
+            "2.1.0",
+            null
         ),
         before = """
             <project>
@@ -57,6 +58,53 @@ class ChangeManagedDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
                             <groupId>jakarta.activation</groupId>
                             <artifactId>jakarta.activation-api</artifactId>
                             <version>2.1.0</version>
+                        </dependency>
+                    </dependencies>
+                </dependencyManagement>
+            </project>
+        """
+    )
+
+    @Test
+    fun changeManagedDependencyGroupIdAndArtifactIdAndVersionAndClassifier() = assertChanged(
+        recipe =  ChangeManagedDependencyGroupIdAndArtifactId(
+            "org.infinispan",
+            "infinispan-core",
+            "org.infinispan",
+            "infinispan-core",
+            "14.0.0.Dev04",
+            "jakarta"
+        ),
+        before = """
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>com.mycompany.app</groupId>
+                <artifactId>my-app</artifactId>
+                <version>1</version>
+                <dependencyManagement>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.infinispan</groupId>
+                            <artifactId>infinispan-core</artifactId>
+                            <version>13.0.10.Final</version>
+                        </dependency>
+                    </dependencies>
+                </dependencyManagement>
+            </project>
+        """,
+        after = """
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>com.mycompany.app</groupId>
+                <artifactId>my-app</artifactId>
+                <version>1</version>
+                <dependencyManagement>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.infinispan</groupId>
+                            <artifactId>infinispan-core</artifactId>
+                            <version>14.0.0.Dev04</version>
+                            <classifier>jakarta</classifier>
                         </dependency>
                     </dependencies>
                 </dependencyManagement>

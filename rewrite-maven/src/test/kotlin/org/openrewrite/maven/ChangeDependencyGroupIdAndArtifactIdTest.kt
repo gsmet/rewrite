@@ -29,6 +29,7 @@ class ChangeDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
             "rewrite-testing-frameworks",
             "org.openrewrite.recipe",
             "rewrite-migrate-java",
+            null,
             null
         )
 
@@ -39,6 +40,7 @@ class ChangeDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
             "javax.activation-api",
             "jakarta.activation",
             "jakarta.activation-api",
+            null,
             null
         ),
         before = """
@@ -106,6 +108,7 @@ class ChangeDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
             "rewrite-java-8",
             "org.openrewrite",
             "rewrite-java-11",
+            null,
             null
         ),
         before = """
@@ -166,7 +169,8 @@ class ChangeDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
             "javax.activation-api",
             "jakarta.activation",
             "jakarta.activation-api",
-            "2.1.0"
+            "2.1.0",
+            null
         ),
         before = """
             <project>
@@ -194,6 +198,49 @@ class ChangeDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
                         <groupId>jakarta.activation</groupId>
                         <artifactId>jakarta.activation-api</artifactId>
                         <version>2.1.0</version>
+                    </dependency>
+                </dependencies>
+            </project>
+        """
+    )
+
+    @Test
+    fun changeDependencyGroupIdAndArtifactIdAndVersionAndClassifier() = assertChanged(
+        recipe =  ChangeDependencyGroupIdAndArtifactId(
+            "org.infinispan",
+            "infinispan-core",
+            "org.infinispan",
+            "infinispan-core",
+            "14.0.0.Dev04",
+            "jakarta"
+        ),
+        before = """
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>com.mycompany.app</groupId>
+                <artifactId>my-app</artifactId>
+                <version>1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.infinispan</groupId>
+                        <artifactId>infinispan-core</artifactId>
+                        <version>13.0.10.Final</version>
+                    </dependency>
+                </dependencies>
+            </project>
+        """,
+        after = """
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>com.mycompany.app</groupId>
+                <artifactId>my-app</artifactId>
+                <version>1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.infinispan</groupId>
+                        <artifactId>infinispan-core</artifactId>
+                        <version>14.0.0.Dev04</version>
+                        <classifier>jakarta</classifier>
                     </dependency>
                 </dependencies>
             </project>
@@ -264,7 +311,7 @@ class ChangeDependencyGroupIdAndArtifactIdTest : MavenRecipeTest {
             """.trimIndent()
         )
 
-        val results = ChangeDependencyGroupIdAndArtifactId("io.quarkus", "quarkus-core", "io.quarkus", "quarkus-arc", null)
+        val results = ChangeDependencyGroupIdAndArtifactId("io.quarkus", "quarkus-core", "io.quarkus", "quarkus-arc", null, null)
             .run(parser.parse(listOf(subchild, child, parent), tempDir, InMemoryExecutionContext()))
 
         assertThat(results).hasSize(1)

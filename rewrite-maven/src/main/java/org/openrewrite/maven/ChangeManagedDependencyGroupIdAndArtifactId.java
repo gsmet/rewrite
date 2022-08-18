@@ -22,6 +22,7 @@ import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.internal.lang.Nullable;
+import org.openrewrite.xml.AddToTagVisitor;
 import org.openrewrite.xml.ChangeTagValueVisitor;
 import org.openrewrite.xml.tree.Xml;
 
@@ -58,6 +59,13 @@ public class ChangeManagedDependencyGroupIdAndArtifactId extends Recipe {
     @Nullable
     String newVersion;
 
+    @Option(displayName = "New classifier",
+            description = "The new classifier to use.",
+            example = "jakarta",
+            required = false)
+    @Nullable
+    String newClassifier;
+
     @Override
     public String getDisplayName() {
         return "Change Maven managed dependency groupId, artifactId and optionally the version";
@@ -89,6 +97,18 @@ public class ChangeManagedDependencyGroupIdAndArtifactId extends Recipe {
                         Optional<Xml.Tag> versionTag = tag.getChild("version");
                         if (versionTag.isPresent() && !newVersion.equals(versionTag.get().getValue().orElse(null))) {
                             doAfterVisit(new ChangeTagValueVisitor<>(versionTag.get(), newVersion));
+                            changed = true;
+                        }
+                    }
+                    if (newClassifier != null) {
+                        Optional<Xml.Tag> classifierTag = tag.getChild("classifier");
+                        if (classifierTag.isPresent()) {
+                            if (!newClassifier.equals(classifierTag.get().getValue().orElse(null))) {
+                                doAfterVisit(new ChangeTagValueVisitor<>(classifierTag.get(), newClassifier));
+                                changed = true;
+                            }
+                        } else {
+                            doAfterVisit(new AddToTagVisitor<>(tag, Xml.Tag.build("<classifier>" + newClassifier + "</classifier>")));
                             changed = true;
                         }
                     }
